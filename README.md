@@ -36,12 +36,12 @@ const messages: Message[] = [
 const total = countTotalInputTokens(messages);
 ```
 
-### Budget Enforcement (planned)
+### Budget Enforcement
 
 ```typescript
-import { createFence } from 'token-fence';
+import { createFence, BudgetExceededError } from 'token-fence';
+import type { Message } from 'token-fence';
 
-// createFence() is not yet implemented — coming in a future release.
 const fence = createFence({
   budgets: {
     perRequest: { maxInputTokens: 8000 },
@@ -50,6 +50,23 @@ const fence = createFence({
   },
   action: 'block',
 });
+
+const messages: Message[] = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+  { role: 'user', content: 'Summarise this document...' },
+];
+
+// Pre-flight check — throws BudgetExceededError if any budget is exceeded
+try {
+  fence.check(messages, { userId: 'alice', sessionId: 'session-1' });
+} catch (err) {
+  if (err instanceof BudgetExceededError) {
+    console.error(`Blocked by ${err.scope} budget (limit ${err.limit}, current ${err.current})`);
+  }
+}
+
+// After the LLM responds, record actual usage to update cumulative counters
+fence.record(messages, { input: 312, output: 88, total: 400 }, { userId: 'alice', sessionId: 'session-1' });
 ```
 
 ## Available Exports
@@ -70,6 +87,32 @@ All TypeScript interfaces and type aliases for configuration, messages, events, 
 - `BudgetExceededError` -- Thrown when a budget limit is exceeded (`code: 'BUDGET_EXCEEDED'`).
 - `ProtectedExceedsBudgetError` -- Thrown when protected messages alone exceed the budget (`code: 'PROTECTED_EXCEEDS_BUDGET'`).
 - `FenceConfigError` -- Thrown for invalid configuration (`code: 'FENCE_CONFIG_ERROR'`).
+
+### Fence API
+
+#### `createFence(config: FenceConfig): FenceInstance`
+
+Create a fence instance. Validates `config` on construction and throws `FenceConfigError` if invalid. At least one budget scope must be configured.
+
+**`config` fields:**
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `budgets` | `BudgetConfig` | required | Budget scopes to enforce. |
+| `action` | `'block' \| 'truncate' \| 'warn'` | `'block'` | Default enforcement action. |
+| `tokenCounter` | `(text: string) => number` | approximate (÷4) | Custom token counting function. |
+| `messageOverhead` | `number` | `4` | Per-message token overhead. |
+| `store` | `FenceStore` | `InMemoryStore` | Pluggable persistence adapter. |
+| `onBlock` | `(event: BlockEvent) => void` | — | Called when a request is blocked. |
+| `onUsage` | `(event: UsageEvent) => void` | — | Called after each `record()` call. |
+
+#### `fence.check(messages, context?): void`
+
+Pre-flight check. Iterates all configured budget scopes in order (perRequest → perUser → perSession → global → custom). Throws `BudgetExceededError` if any scope is exceeded. Does not mutate counters.
+
+#### `fence.record(messages, usage, context?): void`
+
+Record actual token usage after a request completes. Updates cumulative and windowed counters for all applicable scopes (perUser, perSession, global, custom). `usage` must contain `{ input, output, total }` token counts as returned by the LLM API.
 
 ### Counter API
 
