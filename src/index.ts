@@ -28,3 +28,4 @@ export {
   FenceConfigError,
 } from './errors';
 export { approximateTokenCounter, countMessageTokens, countTotalInputTokens } from './counter';
+export { validateConfig, parseWindowDuration } from './validation';
