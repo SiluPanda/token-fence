@@ -31,3 +31,5 @@ export { approximateTokenCounter, countMessageTokens, countTotalInputTokens } fr
 export { validateConfig, parseWindowDuration } from './validation';
 export { InMemoryStore } from './store';
 export { SlidingWindow } from './window';
+export { checkPerRequest, checkScopedBudget, checkAllBudgets, recordUsage } from './budgets';
+export type { BudgetCheckResult } from './budgets';
