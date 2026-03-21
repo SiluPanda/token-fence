@@ -27,3 +27,4 @@ export {
   ProtectedExceedsBudgetError,
   FenceConfigError,
 } from './errors';
+export { approximateTokenCounter, countMessageTokens, countTotalInputTokens } from './counter';
