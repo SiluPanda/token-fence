@@ -30,3 +30,4 @@ export {
 export { approximateTokenCounter, countMessageTokens, countTotalInputTokens } from './counter';
 export { validateConfig, parseWindowDuration } from './validation';
 export { InMemoryStore } from './store';
+export { SlidingWindow } from './window';
