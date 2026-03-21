@@ -42,12 +42,12 @@ This file tracks all implementation tasks derived from SPEC.md. Each task is gra
 
 ## Phase 5: Sliding Window Implementation
 
-- [ ] **Implement `src/window.ts` — `SlidingWindow` class** — Implement bucketed sliding window algorithm. Constructor takes `windowDuration` (ms) and `bucketCount` (default 60). Calculate `bucketDuration = windowDuration / bucketCount`. Track `lastAccessTime` and `lastBucketIndex`. | Status: not_done
-- [ ] **Implement `record(tokens, timestamp)` method** — Calculate current bucket index from timestamp. Perform lazy eviction of stale buckets between last access and current time. Add tokens to the current bucket. Update `lastAccessTime` and `lastBucketIndex`. | Status: not_done
-- [ ] **Implement `getTotal(timestamp)` method** — Perform lazy eviction. Sum all bucket values within the current window. Return the total. | Status: not_done
-- [ ] **Implement lazy bucket eviction** — On each access, calculate elapsed buckets since last access. Reset stale buckets to zero. If elapsed exceeds entire window, reset all buckets. | Status: not_done
-- [ ] **Implement store-backed sliding window** — Integrate with `FenceStore` interface so window data can be persisted externally. Use `store.getWindow`, `store.recordBucket`, `store.resetBuckets` instead of in-memory arrays when a store is provided. | Status: not_done
-- [ ] **Write `src/__tests__/window.test.ts`** — Test recording increments correct bucket. Test `getTotal` sums all buckets. Test expired buckets are evicted on access. Test full window rollover resets all buckets. Test multiple windows with different durations. Test bucket precision (granularity). Test with mocked `Date.now()` for deterministic time control. Test store-backed window operations. | Status: not_done
+- [x] **Implement `src/window.ts` — `SlidingWindow` class** — Implement bucketed sliding window algorithm. Constructor takes `windowDuration` (ms) and `bucketCount` (default 60). Calculate `bucketDuration = windowDuration / bucketCount`. Track `lastAccessTime` and `lastBucketIndex`. | Status: done
+- [x] **Implement `record(tokens, timestamp)` method** — Calculate current bucket index from timestamp. Perform lazy eviction of stale buckets between last access and current time. Add tokens to the current bucket. Update `lastAccessTime` and `lastBucketIndex`. | Status: done
+- [x] **Implement `getTotal(timestamp)` method** — Perform lazy eviction. Sum all bucket values within the current window. Return the total. | Status: done
+- [x] **Implement lazy bucket eviction** — On each access, calculate elapsed buckets since last access. Reset stale buckets to zero. If elapsed exceeds entire window, reset all buckets. | Status: done
+- [x] **Implement store-backed sliding window** — Integrate with `FenceStore` interface so window data can be persisted externally. Use `store.getWindow`, `store.recordBucket`, `store.resetBuckets` instead of in-memory arrays when a store is provided. | Status: done
+- [x] **Write `src/__tests__/window.test.ts`** — Test recording increments correct bucket. Test `getTotal` sums all buckets. Test expired buckets are evicted on access. Test full window rollover resets all buckets. Test multiple windows with different durations. Test bucket precision (granularity). Test with mocked `Date.now()` for deterministic time control. Test store-backed window operations. | Status: done
 
 ---
 
