@@ -20,12 +20,14 @@ export class SlidingWindow {
     storeKey: string = 'default',
   ) {
     this.bucketDuration = windowDuration / bucketCount;
-    this.lastAccessTime = Date.now();
-    this.lastBucketIndex = this.getBucketIndex(this.lastAccessTime);
     this.store = store ?? new InMemoryStore();
     this.storeKey = `window:${storeKey}`;
     // Initialize window in store
     this.store.getWindow(this.storeKey, this.bucketCount);
+    // Restore last access time from store if available, otherwise use current time
+    const storedAccessTime = this.store.get(`${this.storeKey}:lastAccess`) as number;
+    this.lastAccessTime = storedAccessTime > 0 ? storedAccessTime : Date.now();
+    this.lastBucketIndex = this.getBucketIndex(this.lastAccessTime);
   }
 
   private getBucketIndex(timestamp: number): number {
@@ -61,6 +63,7 @@ export class SlidingWindow {
     this.store.recordBucket(this.storeKey, idx, tokens);
     this.lastAccessTime = timestamp;
     this.lastBucketIndex = idx;
+    this.store.set(`${this.storeKey}:lastAccess`, timestamp);
   }
 
   /**
@@ -70,6 +73,7 @@ export class SlidingWindow {
     this.evictStaleBuckets(timestamp);
     this.lastAccessTime = timestamp;
     this.lastBucketIndex = this.getBucketIndex(timestamp);
+    this.store.set(`${this.storeKey}:lastAccess`, timestamp);
     const buckets = this.store.getWindow(this.storeKey, this.bucketCount);
     return (buckets as number[]).reduce((sum, v) => sum + v, 0);
   }

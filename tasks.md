@@ -53,15 +53,15 @@ This file tracks all implementation tasks derived from SPEC.md. Each task is gra
 
 ## Phase 6: Budget Scope Checking
 
-- [ ] **Implement `src/budgets.ts` — per-request budget check** — Implement function that counts input tokens for a messages array and compares against `perRequest.maxInputTokens`. Return pass/fail with details. | Status: not_done
-- [ ] **Implement per-user budget check** — Check cumulative usage for a given `userId` against `perUser.maxInputTokens`, `perUser.maxOutputTokens`, and/or `perUser.maxTotalTokens`. Support both flat ceiling and time-windowed checking. Skip if no `userId` provided in context. | Status: not_done
-- [ ] **Implement per-session budget check** — Check cumulative usage for a given `sessionId` against `perSession` limits. Support flat ceiling and time-windowed. Skip if no `sessionId` in context. | Status: not_done
-- [ ] **Implement global budget check** — Check global cumulative usage against `global` limits. Support time-windowed. | Status: not_done
-- [ ] **Implement custom scope budget checks** — Support `budgets.custom` with arbitrary scope names. Resolve scope IDs from `context.scopes`. | Status: not_done
-- [ ] **Implement scope precedence logic** — Check all applicable scopes in order: per-request, per-user, per-session, per-time-window, global. Stop at the first blocking scope. Return the most restrictive result. | Status: not_done
-- [ ] **Implement cumulative usage recording** — After a response, record actual API-reported usage (input, output, total) against per-user, per-session, global, and custom scopes. Use actual API-reported values, not estimates. | Status: not_done
+- [x] **Implement `src/budgets.ts` — per-request budget check** — Implement function that counts input tokens for a messages array and compares against `perRequest.maxInputTokens`. Return pass/fail with details. | Status: done
+- [x] **Implement per-user budget check** — Check cumulative usage for a given `userId` against `perUser.maxInputTokens`, `perUser.maxOutputTokens`, and/or `perUser.maxTotalTokens`. Support both flat ceiling and time-windowed checking. Skip if no `userId` provided in context. | Status: done
+- [x] **Implement per-session budget check** — Check cumulative usage for a given `sessionId` against `perSession` limits. Support flat ceiling and time-windowed. Skip if no `sessionId` in context. | Status: done
+- [x] **Implement global budget check** — Check global cumulative usage against `global` limits. Support time-windowed. | Status: done
+- [x] **Implement custom scope budget checks** — Support `budgets.custom` with arbitrary scope names. Resolve scope IDs from `context.scopes`. | Status: done
+- [x] **Implement scope precedence logic** — Check all applicable scopes in order: per-request, per-user, per-session, per-time-window, global. Stop at the first blocking scope. Return the most restrictive result. | Status: done
+- [x] **Implement cumulative usage recording** — After a response, record actual API-reported usage (input, output, total) against per-user, per-session, global, and custom scopes. Use actual API-reported values, not estimates. | Status: done
 - [ ] **Implement usage normalization for OpenAI and Anthropic** — Normalize OpenAI (`usage.prompt_tokens`, `usage.completion_tokens`) and Anthropic (`usage.input_tokens`, `usage.output_tokens`) response formats into `{ input, output, total }`. | Status: not_done
-- [ ] **Write `src/__tests__/budgets.test.ts`** — Test per-request blocks when input exceeds limit. Test per-user tracks cumulative across requests. Test per-session tracks within session. Test global tracks across all scopes. Test multiple scopes; most restrictive wins. Test scopes without matching context are skipped gracefully. Test usage recording with actual API values. Test custom scopes. | Status: not_done
+- [x] **Write `src/__tests__/budgets.test.ts`** — Test per-request blocks when input exceeds limit. Test per-user tracks cumulative across requests. Test per-session tracks within session. Test global tracks across all scopes. Test multiple scopes; most restrictive wins. Test scopes without matching context are skipped gracefully. Test usage recording with actual API values. Test custom scopes. | Status: done
 
 ---
 
