@@ -33,3 +33,5 @@ export { InMemoryStore } from './store';
 export { SlidingWindow } from './window';
 export { checkPerRequest, checkScopedBudget, checkAllBudgets, recordUsage } from './budgets';
 export type { BudgetCheckResult } from './budgets';
+export { createFence } from './fence';
+export type { FenceInstance } from './fence';
