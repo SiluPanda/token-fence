@@ -6,21 +6,21 @@ This file tracks all implementation tasks derived from SPEC.md. Each task is gra
 
 ## Phase 1: Project Scaffolding & Type Definitions
 
-- [ ] **Install dev dependencies** — Add `typescript` (>=5.0), `vitest`, and `eslint` as dev dependencies. Run `npm install` and verify lockfile is generated. | Status: not_done
-- [ ] **Configure ESLint** — Add `.eslintrc` or `eslint.config.js` with TypeScript support. Ensure `npm run lint` works against `src/`. | Status: not_done
-- [ ] **Verify build pipeline** — Confirm `npm run build` compiles `src/` to `dist/` with declarations and source maps per `tsconfig.json`. Confirm `npm run test` runs vitest. | Status: not_done
-- [ ] **Create `src/types.ts`** — Define all TypeScript interfaces and types from the spec: `FenceConfig`, `BudgetConfig`, `RequestBudget`, `ScopedBudget`, `EnforcementAction`, `TokenCounter`, `FenceContext`, `AllowanceResult`, `ScopeAllowance`, `ScopeUsage`, `BlockEvent`, `TruncateEvent`, `WarningEvent`, `UsageEvent`, `FenceMetadata`, `FenceStore`, `Message`, and the `TokenFence` interface. | Status: not_done
-- [ ] **Create `src/errors.ts`** — Implement error classes: `FenceError` (base, with `code` property), `BudgetExceededError` (code `BUDGET_EXCEEDED`, with `scope`, `scopeId`, `limit`, `current`, `requested`, `remaining`, `windowResetsAt`), `ProtectedExceedsBudgetError` (code `PROTECTED_EXCEEDS_BUDGET`, with `protectedTokens`, `budget`), and `FenceConfigError` (code `FENCE_CONFIG_ERROR`, with `validationErrors` array). | Status: not_done
-- [ ] **Update `src/index.ts` exports** — Export all public API symbols: `fence`, `createFence`, all types, all error classes. Ensure the barrel file re-exports from the correct internal modules. | Status: not_done
+- [x] **Install dev dependencies** — Add `typescript` (>=5.0), `vitest`, and `eslint` as dev dependencies. Run `npm install` and verify lockfile is generated. | Status: done
+- [x] **Configure ESLint** — Add `.eslintrc` or `eslint.config.js` with TypeScript support. Ensure `npm run lint` works against `src/`. | Status: done
+- [x] **Verify build pipeline** — Confirm `npm run build` compiles `src/` to `dist/` with declarations and source maps per `tsconfig.json`. Confirm `npm run test` runs vitest. | Status: done
+- [x] **Create `src/types.ts`** — Define all TypeScript interfaces and types from the spec: `FenceConfig`, `BudgetConfig`, `RequestBudget`, `ScopedBudget`, `EnforcementAction`, `TokenCounter`, `FenceContext`, `AllowanceResult`, `ScopeAllowance`, `ScopeUsage`, `BlockEvent`, `TruncateEvent`, `WarningEvent`, `UsageEvent`, `FenceMetadata`, `FenceStore`, `Message`, and the `TokenFence` interface. | Status: done
+- [x] **Create `src/errors.ts`** — Implement error classes: `FenceError` (base, with `code` property), `BudgetExceededError` (code `BUDGET_EXCEEDED`, with `scope`, `scopeId`, `limit`, `current`, `requested`, `remaining`, `windowResetsAt`), `ProtectedExceedsBudgetError` (code `PROTECTED_EXCEEDS_BUDGET`, with `protectedTokens`, `budget`), and `FenceConfigError` (code `FENCE_CONFIG_ERROR`, with `validationErrors` array). | Status: done
+- [x] **Update `src/index.ts` exports** — Export all public API symbols: `fence`, `createFence`, all types, all error classes. Ensure the barrel file re-exports from the correct internal modules. | Status: done
 
 ---
 
 ## Phase 2: Token Counting
 
-- [ ] **Implement `src/counter.ts` — approximate token counter** — Implement the default approximate counter: `Math.ceil(text.length / 4)`. Export it as the default `TokenCounter`. | Status: not_done
-- [ ] **Implement message token counting** — Implement `countMessageTokens(msg, tokenCounter, messageOverhead)` that counts tokens for a single message: `tokenCounter(msg.content || '') + messageOverhead + (msg.name ? tokenCounter(msg.name) : 0) + (msg.tool_calls ? tokenCounter(JSON.stringify(msg.tool_calls)) : 0) + (msg.tool_call_id ? tokenCounter(msg.tool_call_id) : 0)`. | Status: not_done
-- [ ] **Implement total input token counting** — Implement `countTotalInputTokens(messages, tokenCounter, messageOverhead)` that sums `countMessageTokens` for all messages in the array. | Status: not_done
-- [ ] **Write `src/__tests__/counter.test.ts`** — Test approximate counter for English text, code, JSON, empty strings. Test message token counting with overhead. Test tool_calls serialization counting. Test custom token counter function is invoked. Test edge cases (null content, missing fields). | Status: not_done
+- [x] **Implement `src/counter.ts` — approximate token counter** — Implement the default approximate counter: `Math.ceil(text.length / 4)`. Export it as the default `TokenCounter`. | Status: done
+- [x] **Implement message token counting** — Implement `countMessageTokens(msg, tokenCounter, messageOverhead)` that counts tokens for a single message: `tokenCounter(msg.content || '') + messageOverhead + (msg.name ? tokenCounter(msg.name) : 0) + (msg.tool_calls ? tokenCounter(JSON.stringify(msg.tool_calls)) : 0) + (msg.tool_call_id ? tokenCounter(msg.tool_call_id) : 0)`. | Status: done
+- [x] **Implement total input token counting** — Implement `countTotalInputTokens(messages, tokenCounter, messageOverhead)` that sums `countMessageTokens` for all messages in the array. | Status: done
+- [x] **Write `src/__tests__/counter.test.ts`** — Test approximate counter for English text, code, JSON, empty strings. Test message token counting with overhead. Test tool_calls serialization counting. Test custom token counter function is invoked. Test edge cases (null content, missing fields). | Status: done
 
 ---
 
