@@ -35,8 +35,8 @@ This file tracks all implementation tasks derived from SPEC.md. Each task is gra
 
 ## Phase 4: In-Memory Store
 
-- [ ] **Implement `src/store.ts` — `FenceStore` interface and in-memory implementation** — Export the `FenceStore` interface. Implement `InMemoryStore` using `Map<string, number>` for cumulative counters and `Map<string, number[]>` for window buckets. Implement all methods: `get`, `set`, `increment`, `delete`, `getWindow`, `recordBucket`, `resetBuckets`. All methods are synchronous. | Status: not_done
-- [ ] **Write `src/__tests__/store.test.ts`** — Test `get` returns 0 for unknown key. Test `set` and `get` roundtrip. Test `increment` adds delta and returns new value. Test `delete` removes key. Test `getWindow` returns zero-filled array for unknown key. Test `recordBucket` increments specific bucket. Test `resetBuckets` zeroes specified indices. | Status: not_done
+- [x] **Implement `src/store.ts` — `FenceStore` interface and in-memory implementation** — Export the `FenceStore` interface. Implement `InMemoryStore` using `Map<string, number>` for cumulative counters and `Map<string, number[]>` for window buckets. Implement all methods: `get`, `set`, `increment`, `delete`, `getWindow`, `recordBucket`, `resetBuckets`. All methods are synchronous. | Status: done
+- [x] **Write `src/__tests__/store.test.ts`** — Test `get` returns 0 for unknown key. Test `set` and `get` roundtrip. Test `increment` adds delta and returns new value. Test `delete` removes key. Test `getWindow` returns zero-filled array for unknown key. Test `recordBucket` increments specific bucket. Test `resetBuckets` zeroes specified indices. | Status: done
 
 ---
 
