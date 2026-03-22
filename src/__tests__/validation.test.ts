@@ -157,7 +157,7 @@ describe('validateConfig', () => {
   it('throws for invalid top-level action', () => {
     const config = {
       budgets: { perRequest: { maxInputTokens: 1000 } },
-      action: 'explode' as any,
+      action: 'explode' as unknown as import('../types').EnforcementAction,
     } as FenceConfig;
     expect(() => validateConfig(config)).toThrow(FenceConfigError);
     try {
@@ -170,7 +170,7 @@ describe('validateConfig', () => {
   it('throws for invalid scope-level action', () => {
     const config: FenceConfig = {
       budgets: {
-        perUser: { maxInputTokens: 1000, action: 'nuke' as any },
+        perUser: { maxInputTokens: 1000, action: 'nuke' as unknown as import('../types').EnforcementAction },
       },
     };
     expect(() => validateConfig(config)).toThrow(FenceConfigError);
@@ -271,7 +271,7 @@ describe('validateConfig', () => {
   it('collects multiple errors and includes all in validationErrors', () => {
     const config: FenceConfig = {
       budgets: {},
-      action: 'bad' as any,
+      action: 'bad' as unknown as import('../types').EnforcementAction,
       messageOverhead: -1,
       windowBuckets: 0,
     };

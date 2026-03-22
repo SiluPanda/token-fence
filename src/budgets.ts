@@ -1,6 +1,5 @@
-import type { BudgetConfig, FenceContext, RequestBudget, ScopedBudget, Message, TokenCounter } from './types';
+import type { BudgetConfig, FenceContext, FenceStore, RequestBudget, ScopedBudget, Message, TokenCounter } from './types';
 import { approximateTokenCounter, countTotalInputTokens } from './counter';
-import { InMemoryStore } from './store';
 import { SlidingWindow } from './window';
 import { parseWindowDuration } from './validation';
 
@@ -46,7 +45,7 @@ export function checkScopedBudget(
   scopeName: string,
   scopeId: string,
   budget: ScopedBudget,
-  store: InstanceType<typeof InMemoryStore>,
+  store: FenceStore,
   requested: number,
 ): BudgetCheckResult {
   const key = `${scopeName}:${scopeId}`;
@@ -82,7 +81,7 @@ export function recordUsage(
   scopeName: string,
   scopeId: string,
   budget: ScopedBudget,
-  store: InstanceType<typeof InMemoryStore>,
+  store: FenceStore,
   usage: { input: number; output: number; total: number },
 ): void {
   const key = `${scopeName}:${scopeId}`;
@@ -106,7 +105,7 @@ export function checkAllBudgets(
   messages: Message[],
   budgets: BudgetConfig,
   context: FenceContext,
-  store: InstanceType<typeof InMemoryStore>,
+  store: FenceStore,
   tokenCounter: TokenCounter = approximateTokenCounter,
   messageOverhead: number = 4,
 ): BudgetCheckResult {
