@@ -121,18 +121,18 @@ This file tracks all implementation tasks derived from SPEC.md. Each task is gra
 
 ## Phase 11: Events and Callbacks
 
-- [ ] **Implement `onBlock` callback invocation** — When a request is blocked, invoke `onBlock` with a `BlockEvent` containing `scope`, `scopeId`, `limit`, `current`, `requested`, `remaining`, `windowResetsAt`, `messages`, `timestamp`. | Status: not_done
+- [x] **Implement `onBlock` callback invocation** — When a request is blocked, invoke `onBlock` with a `BlockEvent` containing `scope`, `scopeId`, `limit`, `current`, `requested`, `remaining`, `windowResetsAt`, `messages`, `timestamp`. | Status: done
 - [ ] **Implement `onTruncate` callback invocation** — When a request is truncated, invoke `onTruncate` with a `TruncateEvent` containing `scope`, `originalTokens`, `truncatedTokens`, `messagesRemoved`, `timestamp`. | Status: not_done
 - [ ] **Implement `onWarning` callback invocation** — When a request proceeds with a warning, invoke `onWarning` with a `WarningEvent` containing `scope`, `scopeId`, `limit`, `current`, `requested`, `projected`, `timestamp`. | Status: not_done
-- [ ] **Implement `onUsage` callback invocation** — After each request completes, invoke `onUsage` with a `UsageEvent` containing `userId`, `sessionId`, `inputTokens`, `outputTokens`, `totalTokens`, `model`, `timestamp`. | Status: not_done
+- [x] **Implement `onUsage` callback invocation** — After each request completes, invoke `onUsage` with a `UsageEvent` containing `userId`, `sessionId`, `inputTokens`, `outputTokens`, `totalTokens`, `model`, `timestamp`. | Status: done
 - [ ] **Write callback tests** — Test each callback is invoked with correct event payload. Test callbacks are not invoked when not configured (no errors). Test callbacks that throw do not break the fence. | Status: not_done
 
 ---
 
 ## Phase 12: Store Adapter Integration
 
-- [ ] **Implement store integration for cumulative tracking** — When a `FenceStore` is provided in config, use `store.get`, `store.set`, `store.increment`, `store.delete` for cumulative counters instead of in-memory maps. | Status: not_done
-- [ ] **Implement store integration for sliding windows** — Use `store.getWindow`, `store.recordBucket`, `store.resetBuckets` for window bucket storage when a store is provided. | Status: not_done
+- [x] **Implement store integration for cumulative tracking** — When a `FenceStore` is provided in config, use `store.get`, `store.set`, `store.increment`, `store.delete` for cumulative counters instead of in-memory maps. | Status: done
+- [x] **Implement store integration for sliding windows** — Use `store.getWindow`, `store.recordBucket`, `store.resetBuckets` for window bucket storage when a store is provided. | Status: done
 - [ ] **Support async store adapters** — Handle stores that return `Promise` from their methods. Ensure all budget checks and usage recording properly await async store operations. | Status: not_done
 - [ ] **Write `src/__tests__/store.test.ts` (integration)** — Test custom store adapter methods are called correctly during budget checks and usage recording. Test async (Promise-returning) store adapter works correctly. Test window bucket operations with custom store. Test `reset` calls `store.delete` for the correct keys. | Status: not_done
 
