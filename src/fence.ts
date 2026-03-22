@@ -1,5 +1,5 @@
 import type { FenceConfig, FenceContext, Message } from './types';
-import { approximateTokenCounter, countTotalInputTokens } from './counter';
+import { approximateTokenCounter } from './counter';
 import { InMemoryStore } from './store';
 import { validateConfig } from './validation';
 import { checkAllBudgets, recordUsage } from './budgets';
@@ -61,7 +61,7 @@ export function createFence(config: FenceConfig): FenceInstance {
         messages,
         config.budgets,
         context,
-        store as InstanceType<typeof InMemoryStore>,
+        store,
         tokenCounter,
         messageOverhead,
       );
@@ -100,26 +100,23 @@ export function createFence(config: FenceConfig): FenceInstance {
       usage: { input: number; output: number; total: number },
       context: FenceContext = {},
     ): void {
-      const storeAdapter = store as InstanceType<typeof InMemoryStore>;
-      const inputTokens = countTotalInputTokens(messages, tokenCounter, messageOverhead);
-
       if (config.budgets.perUser && context.userId) {
-        recordUsage('user', context.userId, config.budgets.perUser, storeAdapter, usage);
+        recordUsage('user', context.userId, config.budgets.perUser, store, usage);
       }
 
       if (config.budgets.perSession && context.sessionId) {
-        recordUsage('session', context.sessionId, config.budgets.perSession, storeAdapter, usage);
+        recordUsage('session', context.sessionId, config.budgets.perSession, store, usage);
       }
 
       if (config.budgets.global) {
-        recordUsage('global', 'global', config.budgets.global, storeAdapter, usage);
+        recordUsage('global', 'global', config.budgets.global, store, usage);
       }
 
       if (config.budgets.custom && context.scopes) {
         for (const [name, budget] of Object.entries(config.budgets.custom)) {
           const scopeId = context.scopes[name];
           if (!scopeId) continue;
-          recordUsage(`custom:${name}`, scopeId, budget, storeAdapter, usage);
+          recordUsage(`custom:${name}`, scopeId, budget, store, usage);
         }
       }
 
@@ -134,9 +131,6 @@ export function createFence(config: FenceConfig): FenceInstance {
           timestamp: new Date(),
         });
       }
-
-      // Suppress unused variable warning — inputTokens used for future per-request tracking
-      void inputTokens;
     },
   };
 }
