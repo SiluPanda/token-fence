@@ -3,6 +3,7 @@
 Token budget enforcement middleware for LLM API clients. Enforce hard spending limits per request, per user, per session, over sliding time windows, and globally -- without changing application logic.
 
 [![npm version](https://img.shields.io/npm/v/token-fence.svg)](https://www.npmjs.com/package/token-fence)
+[![npm downloads](https://img.shields.io/npm/dt/token-fence.svg)](https://www.npmjs.com/package/token-fence)
 [![license](https://img.shields.io/npm/l/token-fence.svg)](https://opensource.org/licenses/MIT)
 [![node](https://img.shields.io/node/v/token-fence.svg)](https://nodejs.org/)
 

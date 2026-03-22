@@ -1,6 +1,6 @@
 {
   "name": "token-fence",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Token budget enforcement middleware with intelligent truncation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
