@@ -1,17 +1,17 @@
-# token-fence
+# token-fence-ts-ts
 
 Token budget enforcement middleware for LLM API clients. Enforce hard spending limits per request, per user, per session, over sliding time windows, and globally -- without changing application logic.
 
-[![npm version](https://img.shields.io/npm/v/token-fence.svg)](https://www.npmjs.com/package/token-fence)
-[![npm downloads](https://img.shields.io/npm/dt/token-fence.svg)](https://www.npmjs.com/package/token-fence)
-[![license](https://img.shields.io/npm/l/token-fence.svg)](https://opensource.org/licenses/MIT)
-[![node](https://img.shields.io/node/v/token-fence.svg)](https://nodejs.org/)
+[![npm version](https://img.shields.io/npm/v/token-fence-ts.svg)](https://www.npmjs.com/package/token-fence-ts)
+[![npm downloads](https://img.shields.io/npm/dt/token-fence-ts.svg)](https://www.npmjs.com/package/token-fence-ts)
+[![license](https://img.shields.io/npm/l/token-fence-ts.svg)](https://opensource.org/licenses/MIT)
+[![node](https://img.shields.io/node/v/token-fence-ts.svg)](https://nodejs.org/)
 
 ---
 
 ## Description
 
-`token-fence` sits between your application code and your LLM API client. Every request passes through the fence, which counts tokens, checks configured budgets, and either allows the request, blocks it by throwing a `BudgetExceededError`, or lets it through with a warning. After the LLM responds, the fence records actual token usage against cumulative and time-windowed budgets.
+`token-fence-ts` sits between your application code and your LLM API client. Every request passes through the fence, which counts tokens, checks configured budgets, and either allows the request, blocks it by throwing a `BudgetExceededError`, or lets it through with a warning. After the LLM responds, the fence records actual token usage against cumulative and time-windowed budgets.
 
 The package answers the question: **"Should this request be allowed to proceed at all?"** It enforces spending ceilings -- a user cannot exceed 100,000 tokens per hour, a single request cannot exceed 8,000 input tokens, a session cannot consume more than 500,000 tokens total, and the application cannot exceed 10 million tokens per day.
 
@@ -22,7 +22,7 @@ Zero runtime dependencies. Works with any LLM provider (OpenAI, Anthropic, or an
 ## Installation
 
 ```bash
-npm install token-fence
+npm install token-fence-ts
 ```
 
 Requires Node.js >= 18.
@@ -32,8 +32,8 @@ Requires Node.js >= 18.
 ## Quick Start
 
 ```typescript
-import { createFence, BudgetExceededError } from 'token-fence';
-import type { Message } from 'token-fence';
+import { createFence, BudgetExceededError } from 'token-fence-ts';
+import type { Message } from 'token-fence-ts';
 
 // Create a fence with budget limits
 const fence = createFence({
@@ -91,7 +91,7 @@ fence.record(
 Create a fence instance. Validates the configuration on construction and throws `FenceConfigError` if invalid. At least one budget scope must be configured.
 
 ```typescript
-import { createFence } from 'token-fence';
+import { createFence } from 'token-fence-ts';
 
 const fence = createFence({
   budgets: {
@@ -155,7 +155,7 @@ Which metric is tracked depends on the budget configuration for each scope:
 Default token counter using the heuristic of ~4 characters per token.
 
 ```typescript
-import { approximateTokenCounter } from 'token-fence';
+import { approximateTokenCounter } from 'token-fence-ts';
 
 approximateTokenCounter('Hello, world!'); // => 4
 ```
@@ -165,8 +165,8 @@ approximateTokenCounter('Hello, world!'); // => 4
 Count tokens for a single `Message`. Includes content, `name`, `tool_calls` (JSON-serialized), and `tool_call_id`. Adds `messageOverhead` (default: 4) per message.
 
 ```typescript
-import { countMessageTokens } from 'token-fence';
-import type { Message } from 'token-fence';
+import { countMessageTokens } from 'token-fence-ts';
+import type { Message } from 'token-fence-ts';
 
 const msg: Message = { role: 'user', content: 'What is the weather today?' };
 const tokens = countMessageTokens(msg); // content tokens + 4 overhead
@@ -177,7 +177,7 @@ const tokens = countMessageTokens(msg); // content tokens + 4 overhead
 Sum `countMessageTokens` across all messages in an array.
 
 ```typescript
-import { countTotalInputTokens } from 'token-fence';
+import { countTotalInputTokens } from 'token-fence-ts';
 
 const total = countTotalInputTokens([
   { role: 'system', content: 'You are a helpful assistant.' },
@@ -196,7 +196,7 @@ These lower-level functions are exported for advanced use cases where you need f
 Check a per-request budget against input tokens. Stateless -- compares the current request's token count against the configured limit.
 
 ```typescript
-import { checkPerRequest } from 'token-fence';
+import { checkPerRequest } from 'token-fence-ts';
 
 const result = checkPerRequest(messages, { maxInputTokens: 8_000 });
 // result.allowed: boolean
@@ -210,7 +210,7 @@ const result = checkPerRequest(messages, { maxInputTokens: 8_000 });
 Check a scoped (cumulative or windowed) budget. Reads current usage from the store and compares `current + requested` against the limit. Supports both flat ceilings and sliding-window budgets.
 
 ```typescript
-import { checkScopedBudget, InMemoryStore } from 'token-fence';
+import { checkScopedBudget, InMemoryStore } from 'token-fence-ts';
 
 const store = new InMemoryStore();
 const result = checkScopedBudget('user', 'alice', { maxInputTokens: 100_000 }, store, 500);
@@ -249,7 +249,7 @@ interface BudgetCheckResult {
 Default in-memory implementation of `FenceStore`. Uses Maps for cumulative counters and sliding window buckets. All methods are synchronous. Data resets on process restart.
 
 ```typescript
-import { InMemoryStore } from 'token-fence';
+import { InMemoryStore } from 'token-fence-ts';
 
 const store = new InMemoryStore();
 
@@ -271,7 +271,7 @@ store.resetBuckets('win:key', [0, 1, 2]);    // zero out buckets 0, 1, 2
 Bucketed sliding window for tracking token usage over a time period. Divides the window into fixed-size buckets and lazily evicts stale buckets on each access.
 
 ```typescript
-import { SlidingWindow, InMemoryStore } from 'token-fence';
+import { SlidingWindow, InMemoryStore } from 'token-fence-ts';
 
 const store = new InMemoryStore();
 const window = new SlidingWindow(
@@ -293,7 +293,7 @@ const total = window.getTotal();   // sum of all non-expired buckets
 Validate a `FenceConfig` object. Throws `FenceConfigError` with a `validationErrors` array listing all issues found. Called automatically by `createFence`.
 
 ```typescript
-import { validateConfig } from 'token-fence';
+import { validateConfig } from 'token-fence-ts';
 
 validateConfig({
   budgets: { perRequest: { maxInputTokens: 4096 } },
@@ -410,7 +410,7 @@ Thrown when a budget limit is exceeded. Code: `'BUDGET_EXCEEDED'`.
 | `windowResetsAt` | `Date \| undefined` | For windowed scopes, when budget will be freed. |
 
 ```typescript
-import { BudgetExceededError } from 'token-fence';
+import { BudgetExceededError } from 'token-fence-ts';
 
 try {
   fence.check(messages, { userId: 'alice' });
@@ -448,7 +448,7 @@ Thrown when the fence configuration is invalid. Code: `'FENCE_CONFIG_ERROR'`.
 | `validationErrors` | `string[]` | List of all validation issues found. |
 
 ```typescript
-import { createFence, FenceConfigError } from 'token-fence';
+import { createFence, FenceConfigError } from 'token-fence-ts';
 
 try {
   createFence({ budgets: {} });
@@ -469,7 +469,7 @@ try {
 Replace the approximate counter with an exact tokenizer for accurate budget enforcement.
 
 ```typescript
-import { createFence } from 'token-fence';
+import { createFence } from 'token-fence-ts';
 import { encode } from 'gpt-tokenizer'; // or any tokenizer
 
 const fence = createFence({
@@ -483,7 +483,7 @@ const fence = createFence({
 Implement the `FenceStore` interface to persist counters across process restarts.
 
 ```typescript
-import type { FenceStore } from 'token-fence';
+import type { FenceStore } from 'token-fence-ts';
 
 class RedisStore implements FenceStore {
   constructor(private redis: RedisClient) {}
@@ -537,7 +537,7 @@ class RedisStore implements FenceStore {
 Seed the store with existing usage data before creating the fence.
 
 ```typescript
-import { createFence, InMemoryStore } from 'token-fence';
+import { createFence, InMemoryStore } from 'token-fence-ts';
 
 const store = new InMemoryStore();
 store.increment('user:alice', 50_000); // Alice has already used 50k tokens
@@ -647,10 +647,10 @@ import type {
   FenceMetadata,
   FenceStore,
   TokenFence,
-} from 'token-fence';
+} from 'token-fence-ts';
 
-import type { BudgetCheckResult } from 'token-fence';
-import type { FenceInstance } from 'token-fence';
+import type { BudgetCheckResult } from 'token-fence-ts';
+import type { FenceInstance } from 'token-fence-ts';
 ```
 
 The package compiles to ES2022 CommonJS modules with full declaration files and source maps.
